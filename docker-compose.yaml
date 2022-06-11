@@ -1,0 +1,30 @@
+version: '3.8'
+
+networks:
+  api-network:
+    driver: bridge
+
+volumes:
+  mongodb_volume:
+
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_volume:/data/db
+    networks:
+      - api-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: kubedev
+      MONGO_INITDB_ROOT_PASSWORD: kube123
+
+  api:
+    image: cloudkoda/api-produto:v1.0.0
+    ports:
+      - 8080:8080
+    networks:
+      - api-network
+    environment:
+      MONGODB_URI: mongodb://kubedev:kube123@mongodb:27017/admin
